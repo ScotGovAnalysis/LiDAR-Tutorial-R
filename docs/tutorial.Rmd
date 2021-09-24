@@ -1,0 +1,200 @@
+---
+title: "LiDAR Tutorial using R"
+date: "`r Sys.Date()`"
+sgtemplates:
+  datatables:
+    features:
+      info: true
+      ordering: true
+      paging: true
+      searching: false
+  header:
+    phase_banner:
+      tag: "WIP"
+      text: "This is a work in progress."
+    site_branding: "Geographic Information Science and Analysis Team"
+  metadata:
+    label: "Tutorial"
+  navigation:
+    toc:
+      sticky: false
+output:
+  html_document:
+    code_download: false
+    df_print: paged
+    fig_caption: true
+    number_sections: false
+    self_contained: false
+    template: "_template.html"
+    toc: true
+    toc_depth: 2
+    toc_float: false
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+# Packages
+
+```{r packages, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(lidR)# for working with  LAZ files
+library(sf) # for working spatial class
+library(raster)# for working with raster
+library(rayshader) # for 3D viz
+library(rgl) # for interactive plots
+```
+
+
+# Area of Interest
+
+```{r warning=FALSE}
+motte_point = st_read("data/canmore_point.shp", quiet = TRUE)
+
+motte_buffer = st_buffer(motte_point,dist = 50)
+
+```
+
+# LAZ
+
+Next, I am reading the LAZ files and clipping the point cloud to the extent of immidiate area around the motte.
+```{r las, warning=FALSE}
+#read laz files
+las = readLAS("data/NX6055_4PPM_LAS_PHASE3.laz")
+
+motte = clip_roi(las, motte_buffer)
+#plot lidar point cloud
+plot(motte, bg = "white")
+
+rglwidget()
+
+
+
+```
+
+<p style="text-align: center;">grab and rotate the model ! </a></p>
+
+# Digital Elevation Model
+
+In this step I am running standard algorithms from LiDR package to compute Digital Surface Model (DSM) and Digitial Terrain Model (DTM).
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+rgl.clear()
+# create dsm and dtm
+dsm = grid_canopy(motte, 0.5, pitfree())
+
+# assign coordinate system
+crs(dsm) = CRS("+init=epsg:27700")
+
+# create dtm
+dtm = grid_terrain(motte, 0.5, algorithm = knnidw(k = 6L, p = 2))
+
+# addign coordinate system
+crs(dtm) = CRS("+init=epsg:27700")
+
+par(mfrow = c(1,2))
+plot(dtm, main = "DTM", col = height.colors(50))
+plot(dsm, main = "DSM",col = height.colors(50))
+
+```
+
+# Hillshade
+
+```{r warning=FALSE}
+# dsm
+slope_dsm = terrain(dsm, opt = 'slope')
+aspect_dsm = terrain(dsm, opt = 'aspect')
+hill_dsm = hillShade(slope_dsm, aspect_dsm, angle = 40, direction = 270)
+
+# dtm
+slope_dtm = terrain(dtm, opt = 'slope')
+aspect_dtm = terrain(dtm, opt = 'aspect')
+hill_dtm = hillShade(slope_dtm, aspect_dtm, angle = 5, direction = 270)
+
+#plot
+par(mfrow = c(1,2))
+plot(hill_dtm, main = "DTM Hilshade", col = grey.colors(100, start = 0, end = 1), 
+     legend = FALSE)
+plot(hill_dsm, main = "DSM Hillshade", col = grey.colors(100, start = 0, end = 1))
+```
+
+# 3D Model
+
+```{r warning=FALSE}
+#And convert it to a matrix:
+elmat = raster_to_matrix(dtm)
+
+elmat %>%
+  sphere_shade(texture = "imhof1") %>%
+  add_shadow(ray_shade(elmat, zscale = 0.5, sunaltitude = 30,lambert = TRUE),
+             max_darken = 1) %>%
+  add_shadow(lamb_shade(elmat,zscale = 0.5,sunaltitude = 30), max_darken = 0.2) %>%
+  add_shadow(ambient_shade(elmat, zscale = 0.5), max_darken = 0.2) %>%
+  plot_3d(elmat, zscale = 0.5,windowsize = c(1000,1000),
+          phi = 40, theta = 180, zoom = 0.8, fov = 1)
+rglwidget()
+```
+
+<p style="text-align: center;">grab and rotate the model ! </a></p>
+
+
+Another example ...
+
+![Tantallon Castle](img/tantallon.gif)
+And here is the code
+
+```{r eval=FALSE, echo=TRUE, warning=FALSE}
+library(rayshader)
+library(raster)
+library(magick)
+library(gifski)
+
+dem = raster("data/tantallon.tif")
+
+n_frames <- 41
+
+elmat = raster_to_matrix(dem)
+
+zscale <- 0.5
+
+waterdepthvalues <- c(0:20, seq(19,0,-1)) / 2
+
+phi_values = seq(20,60)
+
+waterdepthvalues * zscale
+
+length(waterdepthvalues)
+
+img_frames <- paste0("drain", seq_len(n_frames), ".png")
+
+for (i in seq_len(n_frames)) {
+elmat %>%
+  sphere_shade(texture = "imhof1") %>%
+  add_shadow(ray_shade(elmat, zscale = 0.5, sunaltitude = 30,lambert = TRUE),
+             max_darken = 1) %>%
+  add_shadow(lamb_shade(elmat,zscale = 0.5,sunaltitude = 30), max_darken = 0.2) %>%
+  add_shadow(ambient_shade(elmat, zscale = 0.5), max_darken = 0.2) %>%
+  plot_3d(elmat, zscale = 0.5,windowsize = c(1000,1000),
+          water = TRUE, watercolor = "imhof3", wateralpha = 0.5, 
+          waterlinecolor = "#ffffff", waterlinealpha = 0.5,
+          waterdepth = waterdepthvalues[i],
+          phi = 50, theta = 45, zoom = 0.8, fov = 1)
+  render_snapshot(filename = img_frames[i],
+                  title_text = "Tantallon Castle", 
+                  title_font = "Helvetica",
+                  vignette = TRUE,
+                  title_size = 50,
+                  title_color = "black")
+  rgl::clear3d()
+}
+
+magick::image_write_gif(magick::image_read(img_frames), 
+                        path = "tantallon.gif", 
+                        delay = 6/n_frames)
+```
+
+```{r warning=FALSE}
+sessionInfo()
+```

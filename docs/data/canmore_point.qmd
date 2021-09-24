@@ -1,0 +1,74 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.20.2-Odense">
+  <identifier>Canmore_Points</identifier>
+  <parentidentifier></parentidentifier>
+  <language>ENG</language>
+  <type>dataset</type>
+  <title>National Record of the Historic Environment: Canmore Points</title>
+  <abstract>Compiled and managed by Historic Environment Scotland, Canmore contains over 320,000 records and 1.3 million catalogue entries from all its survey and recording work, as well as from a wide range of other organisations, communities and individuals who are helping to enhance this national resource.
+
+
+
+Combining the roles of Historic Scotland and the Royal Commission on the Ancient and Historical Monuments of Scoltand (RCAHMS) Historic Environment Scotland (HES) was established on 1st October 2015. Historic Environment Scotland collects, records and interprets information on the architectural, industrial, archaeological and maritime heritage of Scotland. We have been doing this for more than a hundred years, and our archive offers a unique insight into the special nature of Scotland's Places.</abstract>
+  <keywords vocabulary="Search keys">
+    <keyword>Protected sites</keyword>
+    <keyword>Protected sites</keyword>
+    <keyword>archaeological site</keyword>
+    <keyword>architecture</keyword>
+    <keyword>archaeology</keyword>
+  </keywords>
+  <keywords vocabulary="gmd:topicCategory">
+    <keyword>Protected sites</keyword>
+    <keyword>Protected sites</keyword>
+  </keywords>
+  <contact>
+    <contactAddress>
+      <type></type>
+      <address>16 Bernard Terrace</address>
+      <city>Edinburgh</city>
+      <administrativearea>Scotland</administrativearea>
+      <postalcode>EH8 9NX</postalcode>
+      <country>GB</country>
+    </contactAddress>
+    <name></name>
+    <organization>Historic Environment Scotland</organization>
+    <position>Data and GIS Projects Manager</position>
+    <voice>0131 662 1456</voice>
+    <fax></fax>
+    <email>HeritageData@hes.scot</email>
+    <role></role>
+  </contact>
+  <links/>
+  <history>Canmore provides the public with a searchable website for information held by Historic Environment Scotland (HES). HES is the successor body to RCAHMS and the National Monuments Record of Scotland. Information published through the Canmore Database has been compiled from multiple sources over many years and was gathered in a card index until the mid 1980s when these records were first computerised. The database has continued to evolve since that date.</history>
+  <fees></fees>
+  <constraints type="Limitations of use">This data is indicative only. It should be noted that information may change.</constraints>
+  <encoding></encoding>
+  <crs>
+    <spatialrefsys>
+      <wkt></wkt>
+      <proj4></proj4>
+      <srsid>0</srsid>
+      <srid>0</srid>
+      <authid></authid>
+      <description></description>
+      <projectionacronym></projectionacronym>
+      <ellipsoidacronym></ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys>
+  </crs>
+  <extent>
+    <spatial minz="0" crs="EPSG:4326" maxz="0" minx="-7.7571399999999997" maxx="-0.53202000000000005" maxy="61.46459000000000117" miny="54.53296999999999883" dimensions="2"/>
+    <temporal>
+      <period>
+        <start>2015-11-12T00:00:00Z</start>
+        <end></end>
+      </period>
+    </temporal>
+    <temporal>
+      <period>
+        <start></start>
+        <end></end>
+      </period>
+    </temporal>
+  </extent>
+</qgis>
