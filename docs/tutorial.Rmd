@@ -1,41 +1,22 @@
 ---
-title: "LiDAR Tutorial using R"
+title: "LiDAR Tutorial using R - Work in Progress"
+author: "Scottish Government - Geographic Information Science and Analysis Team"
 date: "`r Sys.Date()`"
-sgtemplates:
-  datatables:
-    features:
-      info: true
-      ordering: true
-      paging: true
-      searching: false
-  header:
-    phase_banner:
-      tag: "WIP"
-      text: "This is a work in progress."
-    site_branding: "Geographic Information Science and Analysis Team"
-  metadata:
-    label: "Tutorial"
-  navigation:
-    toc:
-      sticky: false
 output:
   html_document:
-    code_download: false
-    df_print: paged
-    fig_caption: true
-    number_sections: false
-    self_contained: false
-    template: "_template.html"
     toc: true
-    toc_depth: 2
-    toc_float: false
+    toc_float: true
+bibliography: references.bib
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 # Introduction
+
+...
 
 # Packages
 
@@ -48,7 +29,7 @@ library(rgl) # for interactive plots
 ```
 
 
-# Area of Interest
+# Motte
 
 ```{r warning=FALSE}
 motte_point = st_read("data/canmore_point.shp", quiet = TRUE)
@@ -57,7 +38,7 @@ motte_buffer = st_buffer(motte_point,dist = 50)
 
 ```
 
-# LAZ
+# Point Cloud
 
 Next, I am reading the LAZ files and clipping the point cloud to the extent of immidiate area around the motte.
 ```{r las, warning=FALSE}
@@ -140,7 +121,8 @@ rglwidget()
 <p style="text-align: center;">grab and rotate the model ! </a></p>
 
 
-Another example ...
+
+# Advanced Example
 
 ![Tantallon Castle](img/tantallon.gif)
 And here is the code
@@ -195,6 +177,9 @@ magick::image_write_gif(magick::image_read(img_frames),
                         delay = 6/n_frames)
 ```
 
-```{r warning=FALSE}
-sessionInfo()
-```
+
+# References
+
+---
+nocite: '@*'
+---
